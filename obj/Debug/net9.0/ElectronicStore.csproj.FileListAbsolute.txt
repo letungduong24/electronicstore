@@ -167,3 +167,4 @@ C:\Study\myhome\ElectronicStore\obj\Debug\net9.0\refint\ElectronicStore.dll
 C:\Study\myhome\ElectronicStore\obj\Debug\net9.0\ElectronicStore.pdb
 C:\Study\myhome\ElectronicStore\obj\Debug\net9.0\ElectronicStore.genruntimeconfig.cache
 C:\Study\myhome\ElectronicStore\obj\Debug\net9.0\ref\ElectronicStore.dll
+C:\Study\myhome\ElectronicStore\obj\Debug\net9.0\ElectronicStore.sourcelink.json

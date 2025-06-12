@@ -2,7 +2,9 @@ using ElectronicStore.DTOs;
 using ElectronicStore.Models;
 using ElectronicStore.Repositories;
 using ElectronicStore.Mappers;
+using ElectronicStore.Attributes;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ElectronicStore.Controllers;
 
@@ -20,6 +22,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
     {
         var products = await _productRepository.GetAllAsync();
@@ -27,6 +30,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<ProductDto>> GetById(int id)
     {
         var product = await _productRepository.GetOneAsync(id);
@@ -37,6 +41,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
+    [AuthorizeRoles(UserRole.Admin, UserRole.Staff)]
     public async Task<ActionResult<ProductDto>> Create(ProductDto productDto)
     {
         try
@@ -52,6 +57,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [AuthorizeRoles(UserRole.Admin, UserRole.Staff)]
     public async Task<IActionResult> Update(int id, ProductDto productDto)
     {
         try
@@ -72,6 +78,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [AuthorizeRoles(UserRole.Admin)]
     public async Task<IActionResult> Delete(int id)
     {
         try

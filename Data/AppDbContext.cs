@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<AirConditioner> AirConditioners { get; set; }
     public DbSet<Television> Televisions { get; set; }
     public DbSet<WashingMachine> WashingMachines { get; set; }
+    public DbSet<UserModel> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -50,5 +51,31 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<WashingMachine>()
             .Property(p => p.Capacity)
             .IsRequired();
+
+        // Configure UserModel
+        modelBuilder.Entity<UserModel>()
+            .Property(u => u.Username)
+            .IsRequired();
+
+        modelBuilder.Entity<UserModel>()
+            .Property(u => u.Password)
+            .IsRequired();
+
+        modelBuilder.Entity<UserModel>()
+            .Property(u => u.Email)
+            .IsRequired();
+
+        modelBuilder.Entity<UserModel>()
+            .Property(u => u.Role)
+            .IsRequired();
+
+        // Add unique constraints
+        modelBuilder.Entity<UserModel>()
+            .HasIndex(u => u.Username)
+            .IsUnique();
+
+        modelBuilder.Entity<UserModel>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
     }
 } 
