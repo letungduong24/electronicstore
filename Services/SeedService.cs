@@ -45,7 +45,9 @@ namespace UserManagementAPI.Services
                     UserName = adminEmail,
                     Email = adminEmail,
                     Name = "Admin",
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    Role = "Admin" // 👈 thêm dòng này
+
                 };
 
                 var result = await _userManager.CreateAsync(adminUser, adminPassword);
