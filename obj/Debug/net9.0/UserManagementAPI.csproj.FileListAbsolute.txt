@@ -174,3 +174,4 @@ C:\Study\UserManagementAPI\obj\Debug\net9.0\ref\UserManagementAPI.dll
 C:\Study\UserManagementAPI\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Study\UserManagementAPI\bin\Debug\net9.0\AutoMapper.dll
 C:\Study\UserManagementAPI\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Study\UserManagementAPI\obj\Debug\net9.0\UserManagementAPI.sourcelink.json
