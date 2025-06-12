@@ -46,7 +46,7 @@ namespace UserManagementAPI.Services
                     Email = adminEmail,
                     Name = "Admin",
                     EmailConfirmed = true,
-                    Role = "Admin" // 👈 thêm dòng này
+                    Role = (int)UserRole.Admin  // gán role kiểu int
 
                 };
 
