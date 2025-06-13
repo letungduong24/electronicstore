@@ -9,16 +9,13 @@ namespace UserManagementAPI.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
 
         public UserRepository(
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager,
             ApplicationDbContext context)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
             _context = context;
         }
 
@@ -65,18 +62,6 @@ namespace UserManagementAPI.Repositories
         public async Task<IEnumerable<string>> GetUserRolesAsync(ApplicationUser user)
         {
             return await _userManager.GetRolesAsync(user);
-        }
-
-        public async Task<bool> AddToRoleAsync(ApplicationUser user, string role)
-        {
-            var result = await _userManager.AddToRoleAsync(user, role);
-            return result.Succeeded;
-        }
-
-        public async Task<bool> RemoveFromRoleAsync(ApplicationUser user, string role)
-        {
-            var result = await _userManager.RemoveFromRoleAsync(user, role);
-            return result.Succeeded;
         }
 
         public async Task<bool> IsInRoleAsync(ApplicationUser user, string role)

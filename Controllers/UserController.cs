@@ -10,6 +10,7 @@ using AutoMapper;
 using UserManagementAPI.DTOs;
 using UserManagementAPI.Models;
 using UserManagementAPI.Repositories;
+using UserManagementAPI.Services;
 
 namespace UserManagementAPI.Controllers
 {
@@ -17,24 +18,11 @@ namespace UserManagementAPI.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserService _userService;
 
-        public UserController(
-            IUserRepository userRepository,
-            RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration,
-            IMapper mapper,
-            UserManager<ApplicationUser> userManager)
+        public UserController(IUserService userService)
         {
-            _userRepository = userRepository;
-            _roleManager = roleManager;
-            _configuration = configuration;
-            _mapper = mapper;
-            _userManager = userManager;
+            _userService = userService;
         }
 
         [HttpPost("register")]
@@ -43,37 +31,16 @@ namespace UserManagementAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = _mapper.Map<ApplicationUser>(model);
-            user.UserName = model.Email;
-
-            await _userRepository.AddAsync(user);
-            var result = await _userManager.AddPasswordAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                return Ok(new { message = "User registered successfully" });
-            }
-
-            return BadRequest(result.Errors);
+            var (success, message) = await _userService.RegisterAsync(model);
+            return success ? Ok(new { message }) : BadRequest(message);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost("assign-role")]
         public async Task<IActionResult> AssignRole([FromBody] AssignRoleDto model)
         {
-            var user = await _userRepository.GetByEmailAsync(model.Email);
-            if (user == null)
-                return NotFound("User not found");
-
-            if (!await _roleManager.RoleExistsAsync(model.Role))
-                return BadRequest("Role does not exist");
-
-            var result = await _userManager.AddToRoleAsync(user, model.Role);
-
-            if (result.Succeeded)
-                return Ok(new { message = "Role assigned successfully" });
-
-            return BadRequest(result.Errors);
+            var (success, message) = await _userService.AssignRoleAsync(model);
+            return success ? Ok(new { message }) : BadRequest(message);
         }
 
         [HttpPost("login")]
@@ -82,38 +49,11 @@ namespace UserManagementAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _userRepository.GetByEmailAsync(model.Email);
-            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
-                return Unauthorized("Invalid credentials");
+            var (success, message, token) = await _userService.LoginAsync(model);
+            if (!success)
+                return Unauthorized(message);
 
-            var userRoles = await _userRepository.GetUserRolesAsync(user);
-            var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName ?? ""),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Email, user.Email ?? "")
-            };
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
-            var jwtSettings = _configuration.GetSection("JwtSettings");
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"] ?? throw new InvalidOperationException("JWT Secret not configured")));
-            var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["ExpiresInMinutes"])),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-            );
-
-            return Ok(new
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
+            return Ok(new { token, message });
         }
 
         [Authorize]
@@ -124,12 +64,11 @@ namespace UserManagementAPI.Controllers
             if (userId == null)
                 return Unauthorized();
 
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userService.GetCurrentUserAsync(userId);
             if (user == null)
                 return NotFound();
 
-            var userDto = _mapper.Map<UserDto>(user);
-            return Ok(userDto);
+            return Ok(user);
         }
 
         [Authorize]
@@ -143,14 +82,8 @@ namespace UserManagementAPI.Controllers
             if (userId == null)
                 return Unauthorized();
 
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                return NotFound();
-
-            _mapper.Map(model, user);
-            await _userRepository.UpdateAsync(user);
-
-            return Ok(new { message = "User updated successfully" });
+            var (success, message) = await _userService.UpdateUserAsync(userId, model);
+            return success ? Ok(new { message }) : BadRequest(message);
         }
 
         [Authorize]
@@ -164,15 +97,8 @@ namespace UserManagementAPI.Controllers
             if (userId == null)
                 return Unauthorized();
 
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                return NotFound();
-
-            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            return Ok(new { message = "Password changed successfully" });
+            var (success, message) = await _userService.ChangePasswordAsync(userId, model);
+            return success ? Ok(new { message }) : BadRequest(message);
         }
 
         [Authorize]
@@ -183,55 +109,24 @@ namespace UserManagementAPI.Controllers
             if (userId == null)
                 return Unauthorized();
 
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                return NotFound();
-
-            await _userRepository.DeleteAsync(user);
-            return Ok(new { message = "Account deleted successfully" });
+            var (success, message) = await _userService.DeleteOwnAccountAsync(userId);
+            return success ? Ok(new { message }) : BadRequest(message);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("delete/{email}")]
         public async Task<IActionResult> DeleteUser(string email)
         {
-            var user = await _userRepository.GetByEmailAsync(email);
-            if (user == null)
-                return NotFound("User not found");
-
-            // Không cho phép xóa tài khoản admin khác
-            if (await _userRepository.IsInRoleAsync(user, "Admin"))
-            {
-                return BadRequest("Cannot delete admin account");
-            }
-
-            await _userRepository.DeleteAsync(user);
-            return Ok(new { message = "User deleted successfully" });
+            var (success, message) = await _userService.DeleteUserAsync(email);
+            return success ? Ok(new { message }) : BadRequest(message);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _userRepository.GetAllAsync();
-            var userDtos = new List<object>();
-
-            foreach (var user in users)
-            {
-                var roles = await _userRepository.GetUserRolesAsync(user);
-                var userDto = _mapper.Map<UserDto>(user);
-                userDtos.Add(new
-                {
-                    userDto.Id,
-                    userDto.Email,
-                    userDto.Name,
-                    userDto.Address,
-                    userDto.Phone,
-                    Roles = roles
-                });
-            }
-
-            return Ok(userDtos);
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
         }
     }
 } 
