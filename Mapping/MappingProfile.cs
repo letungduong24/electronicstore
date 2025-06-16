@@ -13,7 +13,10 @@ namespace UserManagementAPI.Mapping
             CreateMap<UpdateUserDto, ApplicationUser>();
 
             CreateMap<ProductModel, ProductResponseDTO>()
-                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name))
+                .Include<Television, ProductResponseDTO>()
+                .Include<WashingMachine, ProductResponseDTO>()
+                .Include<AirConditioner, ProductResponseDTO>();
                 CreateMap<Television, ProductResponseDTO>();
                 CreateMap<WashingMachine, ProductResponseDTO>();
                 CreateMap<AirConditioner, ProductResponseDTO>();
