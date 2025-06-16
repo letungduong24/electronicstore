@@ -14,6 +14,9 @@ namespace UserManagementAPI.Mapping
 
             CreateMap<ProductModel, ProductResponseDTO>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.GetType().Name));
+                CreateMap<Television, ProductResponseDTO>();
+                CreateMap<WashingMachine, ProductResponseDTO>();
+                CreateMap<AirConditioner, ProductResponseDTO>();
             CreateMap<ProductCreateDTO, ProductModel>()
                 .Include<ProductCreateDTO, AirConditioner>()
                 .Include<ProductCreateDTO, WashingMachine>()

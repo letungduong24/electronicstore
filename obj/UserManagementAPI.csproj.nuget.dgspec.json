@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ASUS\\OneDrive\\Documents\\cvdtt\\electronicstore\\UserManagementAPI.csproj": {}
+    "C:\\Users\\ASUS\\Documents\\Zalo Received Files\\electronicstore-1\\UserManagementAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ASUS\\OneDrive\\Documents\\cvdtt\\electronicstore\\UserManagementAPI.csproj": {
+    "C:\\Users\\ASUS\\Documents\\Zalo Received Files\\electronicstore-1\\UserManagementAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ASUS\\OneDrive\\Documents\\cvdtt\\electronicstore\\UserManagementAPI.csproj",
+        "projectUniqueName": "C:\\Users\\ASUS\\Documents\\Zalo Received Files\\electronicstore-1\\UserManagementAPI.csproj",
         "projectName": "UserManagementAPI",
-        "projectPath": "C:\\Users\\ASUS\\OneDrive\\Documents\\cvdtt\\electronicstore\\UserManagementAPI.csproj",
+        "projectPath": "C:\\Users\\ASUS\\Documents\\Zalo Received Files\\electronicstore-1\\UserManagementAPI.csproj",
         "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ASUS\\OneDrive\\Documents\\cvdtt\\electronicstore\\obj\\",
+        "outputPath": "C:\\Users\\ASUS\\Documents\\Zalo Received Files\\electronicstore-1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "O62HwIxBo/4=",
+  "dgSpecHash": "YhTppaW4upA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ASUS\\OneDrive\\Documents\\cvdtt\\electronicstore\\UserManagementAPI.csproj",
+  "projectFilePath": "C:\\Users\\ASUS\\Documents\\Zalo Received Files\\electronicstore-1\\UserManagementAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ASUS\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
