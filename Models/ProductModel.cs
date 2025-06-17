@@ -28,5 +28,6 @@ namespace UserManagementAPI.Models
         public string Type { get; set; }
 
         public abstract void SetSpecificProperties(Dictionary<string, object> values);
+        public abstract Dictionary<string, object> GetSpecificProperties();
     }
 } 

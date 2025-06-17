@@ -19,6 +19,12 @@ namespace UserManagementAPI.Models
 
         }
 
-        public object GetSpecificProperties() => new { ScreenSize };
+        public override Dictionary<string, object> GetSpecificProperties()
+        {
+            return new Dictionary<string, object>
+            {
+                { "ScreenSize", ScreenSize }
+            };
+        }
     }
 } 

@@ -33,17 +33,10 @@ namespace UserManagementAPI.Mapper
                 Model = model.Model,
                 Category = model.Category,
                 ImageUrl = model.ImageUrl,
-                Type = model.Type
+                Type = model.Type,
+                Properties = model.GetSpecificProperties()
             };
 
-            // Map specific properties based on type
-            dto.Properties = model switch
-            {
-                Television tv => new Dictionary<string, object> { { "ScreenSize", tv.ScreenSize } },
-                AirConditioner ac => new Dictionary<string, object> { { "Scope", ac.Scope } },
-                WashingMachine wm => new Dictionary<string, object> { { "Capacity", wm.Capacity } },
-                _ => null
-            };
 
             return dto;
         }

@@ -23,6 +23,12 @@ namespace UserManagementAPI.Models
             }
         }
 
-        public object GetSpecificProperties() => new { Capacity };
+        public override Dictionary<string, object> GetSpecificProperties()
+        {
+            return new Dictionary<string, object>
+            {
+                { "Capacity", Capacity }
+            };
+        }
     }
 } 
