@@ -31,8 +31,11 @@ namespace UserManagementAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (success, message) = await _userService.RegisterAsync(model);
-            return success ? Ok(new { message }) : BadRequest(message);
+            var (success, message, user) = await _userService.RegisterAsync(model);
+            if (!success)
+                return BadRequest(message);
+
+            return Ok(new { message, user });
         }
 
         [Authorize(Roles = "Admin")]
@@ -82,8 +85,11 @@ namespace UserManagementAPI.Controllers
             if (userId == null)
                 return Unauthorized();
 
-            var (success, message) = await _userService.UpdateUserAsync(userId, model);
-            return success ? Ok(new { message }) : BadRequest(message);
+            var (success, message, user) = await _userService.UpdateUserAsync(userId, model);
+            if (!success)
+                return BadRequest(message);
+
+            return Ok(new { message, user });
         }
 
         [Authorize]

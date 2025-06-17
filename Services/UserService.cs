@@ -4,10 +4,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AutoMapper;
 using UserManagementAPI.DTOs;
 using UserManagementAPI.Models;
 using UserManagementAPI.Repositories;
+using UserManagementAPI.Mapper;
 
 namespace UserManagementAPI.Services
 {
@@ -17,31 +17,43 @@ namespace UserManagementAPI.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
+        private readonly UserMapper _userMapper;
 
         public UserService(
             IUserRepository userRepository,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration,
-            IMapper mapper)
+            IConfiguration configuration)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
-            _mapper = mapper;
+            _userMapper = new UserMapper();
         }
 
-        public async Task<(bool success, string message)> RegisterAsync(RegisterDto model)
+        public async Task<(bool success, string message, UserDto? user)> RegisterAsync(RegisterDto model)
         {
-            var user = _mapper.Map<ApplicationUser>(model);
-            user.UserName = model.Email;
+            var user = _userMapper.ToModel(model);
+            if (user == null)
+                return (false, "Invalid registration data", null);
 
             await _userRepository.AddAsync(user);
             var result = await _userManager.AddPasswordAsync(user, model.Password);
 
-            return (result.Succeeded, result.Succeeded ? "User registered successfully" : string.Join(", ", result.Errors.Select(e => e.Description)));
+            if (!result.Succeeded)
+                return (false, string.Join(", ", result.Errors.Select(e => e.Description)), null);
+
+            // Assign default "User" role
+            var roleResult = await _userManager.AddToRoleAsync(user, "User");
+            if (!roleResult.Succeeded)
+            {
+                // If role assignment fails, delete the user and return error
+                await _userRepository.DeleteAsync(user);
+                return (false, "Failed to assign default role", null);
+            }
+
+            return (true, "User registered successfully", _userMapper.ToDTO(user));
         }
 
         public async Task<(bool success, string message, string? token)> LoginAsync(LoginDto model)
@@ -89,15 +101,15 @@ namespace UserManagementAPI.Services
             return (result.Succeeded, result.Succeeded ? "Password changed successfully" : string.Join(", ", result.Errors.Select(e => e.Description)));
         }
 
-        public async Task<(bool success, string message)> UpdateUserAsync(string userId, UpdateUserDto model)
+        public async Task<(bool success, string message, UserDto? user)> UpdateUserAsync(string userId, UpdateUserDto model)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
-                return (false, "User not found");
+                return (false, "User not found", null);
 
-            _mapper.Map(model, user);
+            _userMapper.UpdateModel(model, user);
             await _userRepository.UpdateAsync(user);
-            return (true, "User updated successfully");
+            return (true, "User updated successfully", _userMapper.ToDTO(user));
         }
 
         public async Task<(bool success, string message)> DeleteUserAsync(string email)
@@ -126,7 +138,7 @@ namespace UserManagementAPI.Services
         public async Task<UserDto?> GetCurrentUserAsync(string userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
-            return user != null ? _mapper.Map<UserDto>(user) : null;
+            return user != null ? _userMapper.ToDTO(user) : null;
         }
 
         public async Task<IEnumerable<object>> GetAllUsersAsync()
@@ -137,14 +149,13 @@ namespace UserManagementAPI.Services
             foreach (var user in users)
             {
                 var roles = await _userRepository.GetUserRolesAsync(user);
-                var userDto = _mapper.Map<UserDto>(user);
+                var userDto = _userMapper.ToDTO(user);
                 userDtos.Add(new
                 {
                     userDto.Id,
                     userDto.Email,
                     userDto.Name,
                     userDto.Address,
-                    userDto.Phone,
                     Roles = roles
                 });
             }
