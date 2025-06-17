@@ -13,15 +13,57 @@ namespace UserManagementAPI.Data
 
         public DbSet<ProductModel> Products { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
+            base.OnModelCreating(modelBuilder);
 
-            builder.Entity<ProductModel>()
+            // Configure ProductModel inheritance
+            modelBuilder.Entity<ProductModel>()
                 .HasDiscriminator<string>("ProductType")
+                .HasValue<Television>("Television")
                 .HasValue<AirConditioner>("AirConditioner")
-                .HasValue<WashingMachine>("WashingMachine")
-                .HasValue<Television>("Television");
+                .HasValue<WashingMachine>("WashingMachine");
+
+            // Configure ProductModel properties
+            modelBuilder.Entity<ProductModel>()
+                .Property(p => p.Name)
+                .IsRequired();
+
+            modelBuilder.Entity<ProductModel>()
+                .Property(p => p.Description)
+                .IsRequired();
+
+            modelBuilder.Entity<ProductModel>()
+                .Property(p => p.Price)
+                .HasPrecision(18, 2);
+
+            // Ignore Properties navigation for all product types
+            modelBuilder.Entity<ProductModel>()
+                .Ignore(p => p.Properties);
+
+            modelBuilder.Entity<Television>()
+                .Ignore(t => t.Properties);
+
+            modelBuilder.Entity<AirConditioner>()
+                .Ignore(a => a.Properties);
+
+            modelBuilder.Entity<WashingMachine>()
+                .Ignore(w => w.Properties);
+
+            // Configure Television properties
+            modelBuilder.Entity<Television>()
+                .Property(t => t.ScreenSize)
+                .IsRequired();
+
+            // Configure AirConditioner properties
+            modelBuilder.Entity<AirConditioner>()
+                .Property(a => a.Scope)
+                .IsRequired();
+
+            // Configure WashingMachine properties
+            modelBuilder.Entity<WashingMachine>()
+                .Property(w => w.Capacity)
+                .IsRequired();
         }
     }
 } 

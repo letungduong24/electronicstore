@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace UserManagementAPI.Models
+namespace UserManagementAPI.DTOs
 {
-    public abstract class ProductModel
+    public class ProductDTO
     {
-        [Required]
-        public int ID { get; set; }
+         public int ID { get; set; } 
 
+        [Required]
         public string Name { get; set; }
 
         [Required]
@@ -24,9 +26,13 @@ namespace UserManagementAPI.Models
         public string Model { get; set; }
         public string Category { get; set; }
         public string ImageUrl { get; set; }
-        public Dictionary<string, object> Properties { get; set; }
-        public string Type { get; set; }
 
-        public abstract void SetSpecificProperties(Dictionary<string, object> values);
+        // Dữ liệu đặc trưng của từng loại (TV, Điều hòa, Máy giặt)
+        [Required]
+        public Dictionary<string, object> Properties { get; set; }
+
+        // Xác định loại sản phẩm để factory tạo đúng lớp con
+        [Required]
+        public string Type { get; set; }
     }
-} 
+}

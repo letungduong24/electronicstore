@@ -1,12 +1,10 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserManagementAPI.DTOs;
-using UserManagementAPI.Models;
-using UserManagementAPI.Repositories;
 using UserManagementAPI.Services;
+using UserManagementAPI.Models;
 
 namespace UserManagementAPI.Controllers
 {
@@ -14,51 +12,44 @@ namespace UserManagementAPI.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
-        private readonly ProductFactoryResolver _productFactoryResolver;
-        private readonly IMapper _mapper;
+        private readonly IProductService _productService;
 
-        public ProductsController(IProductRepository productRepository, ProductFactoryResolver productFactoryResolver, IMapper mapper)
+        public ProductsController(IProductService productService)
         {
-            _productRepository = productRepository;
-            _productFactoryResolver = productFactoryResolver;
-            _mapper = mapper;
+            _productService = productService;
         }
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductResponseDTO>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts()
         {
-            var products = await _productRepository.GetAllProductsAsync();
-            return Ok(_mapper.Map<IEnumerable<ProductResponseDTO>>(products));
+            var products = await _productService.GetAllProductsAsync();
+            return Ok(products);
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductResponseDTO>> GetProduct(int id)
+        public async Task<ActionResult<ProductDTO>> GetProduct(int id)
         {
-            var product = await _productRepository.GetProductByIdAsync(id);
+            var product = await _productService.GetProductByIdAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<ProductResponseDTO>(product));
+            return Ok(product);
         }
 
         // POST: api/Products
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<ProductResponseDTO>> AddProduct(ProductCreateDTO productCreateDTO)
+        public async Task<ActionResult<ProductDTO>> AddProduct([FromBody] ProductDTO productDto)
         {
             try
             {
-                var factory = _productFactoryResolver.ResolveFactory(productCreateDTO.Type);
-                var product = factory.CreateProduct();
-                _mapper.Map(productCreateDTO, product);
-                await _productRepository.AddProductAsync(product);
-                return CreatedAtAction(nameof(GetProduct), new { id = product.ID }, _mapper.Map<ProductResponseDTO>(product));
+                var product = await _productService.CreateProductAsync(productDto);
+                return CreatedAtAction(nameof(GetProduct), new { id = product.ID }, product);
             }
             catch (ArgumentException ex)
             {
@@ -69,24 +60,16 @@ namespace UserManagementAPI.Controllers
         // PUT: api/Products/5
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, ProductUpdateDTO productUpdateDTO)
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductDTO productDto)
         {
-            if (id != productUpdateDTO.ID)
-            {
-                return BadRequest("Product ID mismatch");
-            }
-
-            if (!await _productRepository.ProductExistsAsync(id))
-            {
-                return NotFound();
-            }
-
             try
             {
-                var existingProduct = await _productRepository.GetProductByIdAsync(id);
-                _mapper.Map(productUpdateDTO, existingProduct);
-                await _productRepository.UpdateProductAsync(existingProduct);
+                await _productService.UpdateProductAsync(id, productDto);
                 return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
             catch (ArgumentException ex)
             {
@@ -99,13 +82,15 @@ namespace UserManagementAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            if (!await _productRepository.ProductExistsAsync(id))
+            try
+            {
+                await _productService.DeleteProductAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            await _productRepository.DeleteProductAsync(id);
-            return NoContent();
         }
     }
 } 

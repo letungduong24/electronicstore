@@ -7,6 +7,18 @@ namespace UserManagementAPI.Models
 {
     public class AirConditioner : ProductModel
     {
-        public string? Scope { get; set; }
+        public string Scope { get; set; }
+
+
+        public override void SetSpecificProperties(Dictionary<string, object> values)
+        {
+            if (values == null) return;
+            
+            if (values.ContainsKey("Scope"))
+                Scope = values["Scope"].ToString();
+
+        }
+
+        public object GetSpecificProperties() => new { Scope };
     }
 } 

@@ -5198,11 +5198,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Study\\UserManagementAPI\\UserManagementAPI.csproj",
+      "projectUniqueName": "C:\\Study\\electronicstore\\UserManagementAPI.csproj",
       "projectName": "UserManagementAPI",
-      "projectPath": "C:\\Study\\UserManagementAPI\\UserManagementAPI.csproj",
+      "projectPath": "C:\\Study\\electronicstore\\UserManagementAPI.csproj",
       "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-      "outputPath": "C:\\Study\\UserManagementAPI\\obj\\",
+      "outputPath": "C:\\Study\\electronicstore\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

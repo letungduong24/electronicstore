@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hfT7XiQo0k0=",
+  "dgSpecHash": "Nka9SQUobH4=",
   "success": true,
-  "projectFilePath": "C:\\Study\\UserManagementAPI\\UserManagementAPI.csproj",
+  "projectFilePath": "C:\\Study\\electronicstore\\UserManagementAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ADMIN\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

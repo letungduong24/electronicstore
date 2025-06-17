@@ -12,8 +12,8 @@ using UserManagementAPI.Data;
 namespace UserManagementAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250612140504_AddProductInheritance")]
-    partial class AddProductInheritance
+    [Migration("20250617070528_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -242,25 +242,31 @@ namespace UserManagementAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Material")
+                    b.Property<string>("Model")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Power")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProductType")
@@ -270,6 +276,10 @@ namespace UserManagementAPI.Migrations
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
@@ -285,6 +295,7 @@ namespace UserManagementAPI.Migrations
                     b.HasBaseType("UserManagementAPI.Models.ProductModel");
 
                     b.Property<string>("Scope")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("AirConditioner");
@@ -295,6 +306,7 @@ namespace UserManagementAPI.Migrations
                     b.HasBaseType("UserManagementAPI.Models.ProductModel");
 
                     b.Property<string>("ScreenSize")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("Television");
@@ -305,6 +317,7 @@ namespace UserManagementAPI.Migrations
                     b.HasBaseType("UserManagementAPI.Models.ProductModel");
 
                     b.Property<string>("Capacity")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("WashingMachine");

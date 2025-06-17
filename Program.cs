@@ -6,11 +6,13 @@ using System.Text;
 using UserManagementAPI.Data;
 using UserManagementAPI.Models;
 using AutoMapper;
-using UserManagementAPI.Mapping;
 using UserManagementAPI.Repositories;
 using UserManagementAPI.Services;
 using UserManagementAPI.Services.Factories;
-
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using UserManagementAPI.Mapper;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -42,19 +44,16 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<SeedService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddTransient<IProductFactory, AirConditionerFactory>();
-builder.Services.AddTransient<AirConditionerFactory>();
-builder.Services.AddTransient<IProductFactory, WashingMachineFactory>();
-builder.Services.AddTransient<WashingMachineFactory>();
-builder.Services.AddTransient<IProductFactory, TelevisionFactory>();
-builder.Services.AddTransient<TelevisionFactory>();
-builder.Services.AddScoped<ProductFactoryResolver>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductFactory, ProductFactory>();
+builder.Services.AddScoped<ProductMapper>();
+
+// Add AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
