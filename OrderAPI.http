@@ -1,0 +1,61 @@
+### Order API Tests
+
+# Variables
+@baseUrl = https://localhost:7001
+@token = {{login.response.body.token}}
+
+### Login to get token
+# @name login
+POST {{baseUrl}}/api/User/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "Admin123!"
+}
+
+### Add items to cart first
+POST {{baseUrl}}/api/Cart/add
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+### Create order from cart
+POST {{baseUrl}}/api/Order/create
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "shippingAddress": "123 Main Street, City, Country",
+  "notes": "Please deliver in the morning"
+}
+
+### Get order by ID
+GET {{baseUrl}}/api/Order/1
+Authorization: Bearer {{token}}
+
+### Get user orders
+GET {{baseUrl}}/api/Order/my-orders
+Authorization: Bearer {{token}}
+
+### Create PayPal payment
+POST {{baseUrl}}/api/Order/1/paypal/create
+Authorization: Bearer {{token}}
+
+### Complete PayPal payment (after user approves on PayPal)
+POST {{baseUrl}}/api/Order/1/paypal/complete
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "paymentId": "PAY-123456789",
+  "payerId": "PAYER123456"
+}
+
+### Cancel order
+POST {{baseUrl}}/api/Order/1/cancel
+Authorization: Bearer {{token}} 

@@ -1,0 +1,110 @@
+### Test Wallet API
+
+### 1. Login as Admin to get token
+POST {{baseUrl}}/api/User/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "Admin123!"
+}
+
+### 2. Get my balance (as regular user)
+GET {{baseUrl}}/api/Wallet/balance
+Authorization: Bearer {{authToken}}
+
+### 3. Get user balance (Admin only)
+GET {{baseUrl}}/api/Wallet/balance/USER_ID_HERE
+Authorization: Bearer {{adminToken}}
+
+### 4. Update user balance (Admin only)
+PUT {{baseUrl}}/api/Wallet/update-balance
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "userId": "USER_ID_HERE",
+  "newBalance": 1000.00,
+  "reason": "Initial deposit"
+}
+
+### 5. Add balance to user (Admin only)
+POST {{baseUrl}}/api/Wallet/add-balance
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "userId": "USER_ID_HERE",
+  "amount": 500.00,
+  "reason": "Bonus credit"
+}
+
+### 6. Deduct balance from user (Admin only)
+POST {{baseUrl}}/api/Wallet/deduct-balance
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "userId": "USER_ID_HERE",
+  "amount": 100.00,
+  "reason": "Service fee"
+}
+
+### Test Complete Order Flow with Wallet Payment (Simplified)
+
+### 1. Login as regular user
+POST {{baseUrl}}/api/User/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "User123!"
+}
+
+### 2. Check user balance
+GET {{baseUrl}}/api/Wallet/balance
+Authorization: Bearer {{userToken}}
+
+### 3. Add items to cart
+POST {{baseUrl}}/api/Cart/add
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+### 4. Create order from cart (automatically processes payment)
+POST {{baseUrl}}/api/Order/create
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "shippingAddress": "123 Test Street, Test City, 12345",
+  "notes": "Please deliver in the morning"
+}
+
+### 5. Check updated balance (should be reduced)
+GET {{baseUrl}}/api/Wallet/balance
+Authorization: Bearer {{userToken}}
+
+### 6. Check order status (should be "Paid")
+GET {{baseUrl}}/api/Order/1
+Authorization: Bearer {{userToken}}
+
+### 7. Check cart (should be empty)
+GET {{baseUrl}}/api/Cart
+Authorization: Bearer {{userToken}}
+
+### Test Insufficient Balance Scenario
+
+### 1. Try to create order with insufficient balance
+POST {{baseUrl}}/api/Order/create
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+
+{
+  "shippingAddress": "123 Test Street, Test City, 12345",
+  "notes": "This should fail if balance is insufficient"
+} 

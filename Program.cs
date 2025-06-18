@@ -43,19 +43,36 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IProductFactory, ProductFactory>();
-builder.Services.AddScoped<ProductMapper>();
-
-// Cart services
 builder.Services.AddScoped<ICartRepository, CartRepository>();
-builder.Services.AddScoped<ICartService, CartService>();
-builder.Services.AddScoped<CartMapper>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 
+// Unit of Work
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
+
+// Factories
+builder.Services.AddScoped<IProductFactory, ProductFactory>();
+
+// Mappers
+builder.Services.AddScoped<ProductMapper>();
+builder.Services.AddScoped<CartMapper>();
+builder.Services.AddScoped<OrderMapper>();
+
+// Seed Service
 builder.Services.AddScoped<SeedService>();
+
+// HTTP Client for PayPal
+// builder.Services.AddHttpClient<IPayPalService, PayPalService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
