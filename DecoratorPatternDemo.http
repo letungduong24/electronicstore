@@ -1,0 +1,51 @@
+### Decorator Pattern Demo - Cart Operations with Stock Validation and Logging
+
+### 1. Add to Cart with Sufficient Stock (will log and validate)
+POST http://localhost:5000/api/Cart/add
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "productId": 1,
+    "quantity": 2
+}
+
+### 2. Add to Cart with Insufficient Stock (will log error and throw validation exception)
+POST http://localhost:5000/api/Cart/add
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "productId": 1,
+    "quantity": 100
+}
+
+### 3. Update Cart Item with Valid Quantity (will log and validate)
+PUT http://localhost:5000/api/Cart/update/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "quantity": 3
+}
+
+### 4. Update Cart Item with Invalid Quantity (will log error and throw validation exception)
+PUT http://localhost:5000/api/Cart/update/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "quantity": 50
+}
+
+### 5. Get User Cart (will only log, no validation needed)
+GET http://localhost:5000/api/Cart
+Authorization: Bearer {{auth_token}}
+
+### 6. Remove from Cart (will only log, no validation needed)
+DELETE http://localhost:5000/api/Cart/remove/1
+Authorization: Bearer {{auth_token}}
+
+### 7. Clear Cart (will only log, no validation needed)
+DELETE http://localhost:5000/api/Cart/clear
+Authorization: Bearer {{auth_token}} 

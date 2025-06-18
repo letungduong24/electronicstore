@@ -103,6 +103,13 @@ namespace UserManagementAPI.Repositories
                 .FirstOrDefaultAsync(ci => ci.Id == cartItemId);
         }
 
+        public async Task<CartItem> GetCartItemByProductAsync(int cartId, int productId)
+        {
+            return await _context.CartItems
+                .Include(ci => ci.Product)
+                .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
+        }
+
         public async Task<bool> CartItemExistsAsync(int cartId, int productId)
         {
             return await _context.CartItems

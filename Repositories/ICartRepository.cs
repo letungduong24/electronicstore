@@ -11,6 +11,7 @@ namespace UserManagementAPI.Repositories
         Task<bool> RemoveCartItemAsync(int cartItemId);
         Task<bool> ClearCartAsync(int cartId);
         Task<CartItem> GetCartItemAsync(int cartItemId);
+        Task<CartItem> GetCartItemByProductAsync(int cartId, int productId);
         Task<bool> CartItemExistsAsync(int cartId, int productId);
     }
 } 

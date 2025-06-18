@@ -1,0 +1,83 @@
+### Test Update Product - Returns Updated Product
+PUT http://localhost:5000/api/Products/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "id": 1,
+    "name": "Updated Samsung Smart TV",
+    "description": "Updated description for Samsung Smart TV",
+    "price": 1299.99,
+    "stock": 25,
+    "brand": "Samsung",
+    "model": "QLED 4K",
+    "category": "Television",
+    "imageUrl": "https://example.com/samsung-tv.jpg",
+    "type": "tv",
+    "properties": {
+        "ScreenSize": "55 inch"
+    }
+}
+
+### Test Update Product - Partial Update
+PUT http://localhost:5000/api/Products/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "id": 1,
+    "name": "Samsung Smart TV Pro",
+    "description": "Premium Samsung Smart TV with advanced features",
+    "price": 1499.99,
+    "stock": 30,
+    "brand": "Samsung",
+    "model": "QLED 4K Pro",
+    "category": "Television",
+    "imageUrl": "https://example.com/samsung-tv-pro.jpg",
+    "type": "tv",
+    "properties": {
+        "ScreenSize": "65 inch"
+    }
+}
+
+### Test Update Product - Invalid ID (should fail)
+PUT http://localhost:5000/api/Products/999
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "id": 999,
+    "name": "Non-existent Product",
+    "description": "This product doesn't exist",
+    "price": 100.00,
+    "stock": 10,
+    "brand": "Test",
+    "model": "Test Model",
+    "category": "Test",
+    "imageUrl": "https://example.com/test.jpg",
+    "type": "tv",
+    "properties": {
+        "ScreenSize": "32 inch"
+    }
+}
+
+### Test Update Product - ID Mismatch (should fail)
+PUT http://localhost:5000/api/Products/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "id": 2,
+    "name": "ID Mismatch Test",
+    "description": "This should fail due to ID mismatch",
+    "price": 100.00,
+    "stock": 10,
+    "brand": "Test",
+    "model": "Test Model",
+    "category": "Test",
+    "imageUrl": "https://example.com/test.jpg",
+    "type": "tv",
+    "properties": {
+        "ScreenSize": "32 inch"
+    }
+} 

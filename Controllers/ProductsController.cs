@@ -83,12 +83,12 @@ namespace UserManagementAPI.Controllers
         // PUT: api/Products/5
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductDTO productDto)
+        public async Task<ActionResult<ProductDTO>> UpdateProduct(int id, [FromBody] ProductDTO productDto)
         {
             try
             {
-                await _productService.UpdateProductAsync(id, productDto);
-                return NoContent();
+                var updatedProduct = await _productService.UpdateProductAsync(id, productDto);
+                return Ok(updatedProduct);
             }
             catch (KeyNotFoundException)
             {

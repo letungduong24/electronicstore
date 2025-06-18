@@ -8,6 +8,7 @@ using UserManagementAPI.Models;
 using UserManagementAPI.Repositories;
 using UserManagementAPI.Services;
 using UserManagementAPI.Services.Factories;
+using UserManagementAPI.Services.Decorators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -56,7 +57,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICartService, CartService>();
+
+// Cart Service with Decorators
+builder.Services.AddScoped<CartService>();
+builder.Services.AddScoped<ICartService>(serviceProvider => 
+    CartServiceDecoratorFactory.CreateDecoratedCartService(serviceProvider));
+
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 

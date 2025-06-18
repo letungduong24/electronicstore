@@ -10,7 +10,7 @@ namespace UserManagementAPI.Services
         Task<IEnumerable<ProductDTO>> GetAllProductsAsync();
         Task<ProductDTO> GetProductByIdAsync(int id);
         Task<ProductDTO> CreateProductAsync(ProductDTO productDto);
-        Task UpdateProductAsync(int id, ProductDTO productDto);
+        Task<ProductDTO> UpdateProductAsync(int id, ProductDTO productDto);
         Task DeleteProductAsync(int id);
         Task<bool> ProductExistsAsync(int id);
         string[] GetSupportedProductTypes();

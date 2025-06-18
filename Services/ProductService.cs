@@ -66,7 +66,7 @@ namespace UserManagementAPI.Services
             return _productMapper.ToDTO(product);
         }
 
-        public async Task UpdateProductAsync(int id, ProductDTO productDto)
+        public async Task<ProductDTO> UpdateProductAsync(int id, ProductDTO productDto)
         {
             if (id != productDto.ID)
             {
@@ -92,6 +92,9 @@ namespace UserManagementAPI.Services
             }
 
             await _productRepository.UpdateProductAsync(product);
+            
+            // Return the updated product
+            return _productMapper.ToDTO(product);
         }
 
         public async Task DeleteProductAsync(int id)

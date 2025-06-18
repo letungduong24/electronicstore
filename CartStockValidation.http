@@ -1,0 +1,61 @@
+### Test Add to Cart with Sufficient Stock
+POST http://localhost:5000/api/Cart/add
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "productId": 1,
+    "quantity": 2
+}
+
+### Test Add to Cart with Insufficient Stock (should fail)
+POST http://localhost:5000/api/Cart/add
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "productId": 1,
+    "quantity": 100
+}
+
+### Test Add to Cart with Non-existent Product (should fail)
+POST http://localhost:5000/api/Cart/add
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "productId": 999,
+    "quantity": 1
+}
+
+### Test Update Cart Item with Sufficient Stock
+PUT http://localhost:5000/api/Cart/update/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "quantity": 3
+}
+
+### Test Update Cart Item with Insufficient Stock (should fail)
+PUT http://localhost:5000/api/Cart/update/1
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "quantity": 50
+}
+
+### Test Add Same Product Multiple Times (should check total quantity)
+POST http://localhost:5000/api/Cart/add
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "productId": 1,
+    "quantity": 1
+}
+
+### Get User Cart
+GET http://localhost:5000/api/Cart
+Authorization: Bearer {{auth_token}} 

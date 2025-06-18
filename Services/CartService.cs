@@ -10,10 +10,10 @@ namespace UserManagementAPI.Services
         private readonly ICartRepository _cartRepository;
         private readonly CartMapper _cartMapper;
 
-        public CartService(ICartRepository cartRepository)
+        public CartService(ICartRepository cartRepository, CartMapper cartMapper)
         {
             _cartRepository = cartRepository;
-            _cartMapper = new CartMapper();
+            _cartMapper = cartMapper;
         }
 
         public async Task<CartDto> GetUserCartAsync(string userId)
