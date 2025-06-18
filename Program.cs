@@ -5,7 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UserManagementAPI.Data;
 using UserManagementAPI.Models;
-using AutoMapper;
 using UserManagementAPI.Repositories;
 using UserManagementAPI.Services;
 using UserManagementAPI.Services.Factories;
@@ -45,15 +44,18 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<SeedService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductFactory, ProductFactory>();
 builder.Services.AddScoped<ProductMapper>();
 
-// Add AutoMapper
-builder.Services.AddAutoMapper(typeof(Program));
+// Cart services
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<CartMapper>();
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<SeedService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

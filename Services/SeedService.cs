@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using UserManagementAPI.Models;
+using UserManagementAPI.Repositories;
 
 namespace UserManagementAPI.Services
 {
@@ -8,15 +9,18 @@ namespace UserManagementAPI.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ICartRepository _cartRepository;
 
         public SeedService(
             RoleManager<IdentityRole> roleManager,
             UserManager<ApplicationUser> userManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ICartRepository cartRepository)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _configuration = configuration;
+            _cartRepository = cartRepository;
         }
 
         public async Task SeedRolesAsync()
@@ -53,6 +57,13 @@ namespace UserManagementAPI.Services
                 {
                     await _userManager.AddToRoleAsync(adminUser, "Admin");
                 }
+            }
+
+            // Tạo giỏ hàng cho admin nếu chưa có
+            var cart = await _cartRepository.GetCartByUserIdAsync(adminUser.Id);
+            if (cart == null)
+            {
+                await _cartRepository.CreateCartAsync(adminUser.Id);
             }
         }
     }

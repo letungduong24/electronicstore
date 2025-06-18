@@ -18,17 +18,20 @@ namespace UserManagementAPI.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly UserMapper _userMapper;
+        private readonly ICartRepository _cartRepository;
 
         public UserService(
             IUserRepository userRepository,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ICartRepository cartRepository)
         {
             _userRepository = userRepository;
             _userManager = userManager;
             _roleManager = roleManager;
             _configuration = configuration;
+            _cartRepository = cartRepository;
             _userMapper = new UserMapper();
         }
 
@@ -51,6 +54,18 @@ namespace UserManagementAPI.Services
                 // If role assignment fails, delete the user and return error
                 await _userRepository.DeleteAsync(user);
                 return (false, "Failed to assign default role", null);
+            }
+
+            // Create cart for the new user
+            try
+            {
+                await _cartRepository.CreateCartAsync(user.Id);
+            }
+            catch (Exception ex)
+            {
+                // If cart creation fails, log the error but don't fail the registration
+                // You might want to add proper logging here
+                Console.WriteLine($"Failed to create cart for user {user.Id}: {ex.Message}");
             }
 
             return (true, "User registered successfully", _userMapper.ToDTO(user));

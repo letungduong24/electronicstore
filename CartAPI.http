@@ -1,0 +1,46 @@
+### Cart API Tests
+
+# Variables
+@baseUrl = https://localhost:7001
+@token = {{login.response.body.token}}
+
+### Login to get token
+# @name login
+POST {{baseUrl}}/api/User/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "Admin123!"
+}
+
+### Get user cart
+GET {{baseUrl}}/api/Cart
+Authorization: Bearer {{token}}
+
+### Add item to cart
+POST {{baseUrl}}/api/Cart/add
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+### Update cart item quantity
+PUT {{baseUrl}}/api/Cart/items/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+
+### Remove item from cart
+DELETE {{baseUrl}}/api/Cart/items/1
+Authorization: Bearer {{token}}
+
+### Clear cart
+DELETE {{baseUrl}}/api/Cart/clear
+Authorization: Bearer {{token}} 
