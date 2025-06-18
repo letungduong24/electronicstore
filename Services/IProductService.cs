@@ -13,5 +13,7 @@ namespace UserManagementAPI.Services
         Task UpdateProductAsync(int id, ProductDTO productDto);
         Task DeleteProductAsync(int id);
         Task<bool> ProductExistsAsync(int id);
+        string[] GetSupportedProductTypes();
+        Dictionary<string, string[]> GetRequiredPropertiesForType(string type);
     }
 }

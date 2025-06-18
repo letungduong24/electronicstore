@@ -41,6 +41,29 @@ namespace UserManagementAPI.Controllers
             return Ok(product);
         }
 
+        // GET: api/Products/types
+        [HttpGet("types")]
+        public ActionResult<string[]> GetSupportedProductTypes()
+        {
+            var types = _productService.GetSupportedProductTypes();
+            return Ok(types);
+        }
+
+        // GET: api/Products/types/{type}/properties
+        [HttpGet("types/{type}/properties")]
+        public ActionResult<Dictionary<string, string[]>> GetRequiredPropertiesForType(string type)
+        {
+            try
+            {
+                var properties = _productService.GetRequiredPropertiesForType(type);
+                return Ok(properties);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         // POST: api/Products
         [Authorize(Roles = "Admin")]
         [HttpPost]
@@ -53,7 +76,7 @@ namespace UserManagementAPI.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -73,7 +96,7 @@ namespace UserManagementAPI.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { message = ex.Message });
             }
         }
 
