@@ -101,12 +101,6 @@ namespace UserManagementAPI.Data
                 .HasForeignKey(oi => oi.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<OrderItem>()
-                .HasOne(oi => oi.Product)
-                .WithMany()
-                .HasForeignKey(oi => oi.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Configure decimal precision for Order
             modelBuilder.Entity<Order>()
                 .Property(o => o.TotalAmount)

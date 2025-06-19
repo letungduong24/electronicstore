@@ -17,9 +17,6 @@ namespace UserManagementAPI.Models
         [Required]
         public int ProductId { get; set; }
         
-        [ForeignKey("ProductId")]
-        public ProductModel Product { get; set; }
-        
         [Required]
         public string ProductName { get; set; }
         

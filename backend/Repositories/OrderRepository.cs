@@ -17,7 +17,6 @@ namespace UserManagementAPI.Repositories
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
                 .Include(o => o.User)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
         }
@@ -26,7 +25,6 @@ namespace UserManagementAPI.Repositories
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
                 .Include(o => o.User)
                 .FirstOrDefaultAsync(o => o.OrderNumber == orderNumber);
         }
@@ -35,7 +33,6 @@ namespace UserManagementAPI.Repositories
         {
             return await _context.Orders
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product)
                 .Where(o => o.UserId == userId)
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
