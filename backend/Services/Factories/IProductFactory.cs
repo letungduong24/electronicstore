@@ -6,7 +6,6 @@ namespace UserManagementAPI.Services.Factories
     public interface IProductFactory
     {
         ProductModel CreateProduct(string type);
-        ProductModel CreateProductFromDto(ProductDTO productDto);
         bool ValidateProductType(string type);
         string[] GetSupportedProductTypes();
         Dictionary<string, string> GetTypeDisplayNames();

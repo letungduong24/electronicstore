@@ -54,7 +54,7 @@ namespace UserManagementAPI.Services
             }
 
             // Create product using factory
-            var product = _productFactory.CreateProductFromDto(productDto);
+            var product = _productMapper.ToModel(productDto);
             
             // Validate product
             if (!product.ValidateProduct())
@@ -78,13 +78,19 @@ namespace UserManagementAPI.Services
                 throw new KeyNotFoundException($"Product with ID {id} not found");
             }
 
-            // Validate product type
             if (!_productFactory.ValidateProductType(productDto.Type))
             {
-                throw new ArgumentException($"Invalid product type: {productDto.Type}");
+                throw new ArgumentException($"Invalid product type: {productDto.Type}. Supported types: {string.Join(", ", _productFactory.GetSupportedProductTypes())}");
             }
 
-            var product = _productFactory.CreateProductFromDto(productDto);
+            // Validate required properties
+            if (productDto.Properties != null && !_productFactory.ValidateProductProperties(productDto.Type, productDto.Properties))
+            {
+                var requiredProps = _productFactory.GetRequiredPropertiesForType(productDto.Type)[productDto.Type.ToLower()];
+                throw new ArgumentException($"Missing required properties for {productDto.Type}: {string.Join(", ", requiredProps)}");
+            }
+
+            var product = _productMapper.ToModel(productDto);
             
             if (!product.ValidateProduct())
             {

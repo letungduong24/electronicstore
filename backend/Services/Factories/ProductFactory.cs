@@ -42,36 +42,6 @@ namespace UserManagementAPI.Services.Factories
             return def.CreateInstance();
         }
 
-        public ProductModel CreateProductFromDto(ProductDTO productDto)
-        {
-            if (productDto == null)
-                throw new ArgumentNullException(nameof(productDto));
-
-            var def = _productTypes.FirstOrDefault(x => x.Type.Equals(productDto.Type, StringComparison.OrdinalIgnoreCase));
-            if (def == null)
-                throw new ArgumentException($"Unsupported product type: {productDto.Type}");
-
-            var product = def.CreateInstance();
-            // Set common properties
-            product.ID = productDto.ID;
-            product.Name = productDto.Name;
-            product.Description = productDto.Description;
-            product.Price = productDto.Price;
-            product.Stock = productDto.Stock;
-            product.Brand = productDto.Brand;
-            product.Model = productDto.Model;
-            product.ImageUrl = productDto.ImageUrl;
-            product.Type = productDto.Type;
-
-            // Set specific properties if provided
-            if (productDto.Properties != null && productDto.Properties.Any())
-            {
-                product.SetSpecificProperties(productDto.Properties);
-            }
-
-            return product;
-        }
-
         public bool ValidateProductType(string type)
         {
             return _productTypes.Any(x => x.Type.Equals(type, StringComparison.OrdinalIgnoreCase));
