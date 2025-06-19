@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ShoppingBag, Calendar, MapPin, DollarSign, Image } from 'lucide-react';
 import { toast } from 'sonner';
 import api from '../services/api';
+import { Link } from 'react-router-dom';
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -158,7 +159,7 @@ const Orders = () => {
                     {order.orderItems?.map((item) => (
                       <div key={item.id} className="flex items-center justify-between text-sm">
                         <div className="flex items-center space-x-3">
-                          <div className="h-10 w-10 bg-gray-200 rounded flex items-center justify-center overflow-hidden">
+                          <Link to={`/products/${item.productId}`} className="h-10 w-10 bg-gray-200 rounded flex items-center justify-center overflow-hidden">
                             {item.productImageUrl ? (
                               <img 
                                 src={item.productImageUrl} 
@@ -173,9 +174,11 @@ const Orders = () => {
                             <div className="text-gray-500 text-xs" style={{ display: item.productImageUrl ? 'none' : 'flex' }}>
                               <Image className="h-4 w-4" />
                             </div>
-                          </div>
+                          </Link>
                           <div>
-                            <div className="font-medium text-gray-900">{item.productName}</div>
+                            <Link to={`/products/${item.productId}`} className="font-medium text-gray-900 hover:underline">
+                              {item.productName}
+                            </Link>
                             <div className="text-gray-500">Số lượng: {item.quantity}</div>
                           </div>
                         </div>
