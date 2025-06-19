@@ -15,21 +15,21 @@ namespace UserManagementAPI.Services.Factories
             {
                 Type = "tv",
                 DisplayName = "Tivi",
-                RequiredProperties = new[] { "ScreenSize" },
+                RequiredProperties = ProductPropertyHelper.GetSpecificPropertyNames(typeof(Television)),
                 CreateInstance = () => new Television()
             },
             new ProductTypeDefinition
             {
                 Type = "airconditioner",
                 DisplayName = "Điều hòa",
-                RequiredProperties = new[] { "Scope" },
+                RequiredProperties = ProductPropertyHelper.GetSpecificPropertyNames(typeof(AirConditioner)),
                 CreateInstance = () => new AirConditioner()
             },
             new ProductTypeDefinition
             {
                 Type = "washingmachine",
                 DisplayName = "Máy giặt",
-                RequiredProperties = new[] { "Capacity" },
+                RequiredProperties = ProductPropertyHelper.GetSpecificPropertyNames(typeof(WashingMachine)),
                 CreateInstance = () => new WashingMachine()
             }
         };
