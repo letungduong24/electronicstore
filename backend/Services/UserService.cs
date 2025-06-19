@@ -164,7 +164,15 @@ namespace UserManagementAPI.Services
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null) return null;
-            var userDto = _userMapper.ToDTO(user);
+            // Lấy số lượng sản phẩm trong giỏ hàng
+            var cart = await _cartRepository.GetCartByUserIdAsync(userId);
+            int cartItemCount = 0;
+            if (cart != null && cart.CartItems != null)
+            {
+                cartItemCount = cart.CartItems.Sum(item => item.Quantity);
+            }
+            var roles = await _userRepository.GetUserRolesAsync(user);
+            var userDto = _userMapper.ToDTO(user, roles.ToList(), cartItemCount);
             userDto.Balance = await _walletService.GetUserBalanceAsync(user.Id);
             return userDto;
         }

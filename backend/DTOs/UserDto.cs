@@ -12,5 +12,6 @@ namespace UserManagementAPI.DTOs
         public string? Address { get; set; }
         public List<string>? Roles { get; set; }
         public decimal Balance { get; set; }
+        public int CartItemCount { get; set; }
     }
 } 

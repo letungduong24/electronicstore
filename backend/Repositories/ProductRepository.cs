@@ -3,6 +3,7 @@ using UserManagementAPI.Data;
 using UserManagementAPI.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace UserManagementAPI.Repositories
 {
@@ -39,6 +40,10 @@ namespace UserManagementAPI.Repositories
 
         public async Task DeleteProductAsync(int id)
         {
+            // Xóa tất cả CartItem liên quan trước
+            var cartItems = _context.CartItems.Where(ci => ci.ProductId == id);
+            _context.CartItems.RemoveRange(cartItems);
+
             var product = await _context.Products.FindAsync(id);
             if (product != null)
             {

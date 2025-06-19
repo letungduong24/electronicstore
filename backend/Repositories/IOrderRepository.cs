@@ -11,5 +11,6 @@ namespace UserManagementAPI.Repositories
         Task<Order> UpdateOrderAsync(Order order);
         Task<bool> DeleteOrderAsync(int orderId);
         Task<string> GenerateOrderNumberAsync();
+        Task<IEnumerable<Order>> GetAllOrdersAsync();
     }
 } 

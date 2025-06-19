@@ -72,5 +72,14 @@ namespace UserManagementAPI.Repositories
             
             return $"ORD{today}{count + 1:D4}";
         }
+
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .Include(o => o.User)
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
+        }
     }
 } 

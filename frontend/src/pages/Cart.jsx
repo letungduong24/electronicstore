@@ -50,6 +50,7 @@ const Cart = () => {
 
       const response = await api.post('/api/Order/create', orderData);
       toast.success('Đặt hàng thành công!');
+      await useAuthStore.getState().getCurrentUser();
       navigate('/orders');
     } catch (error) {
       const message = error.response?.data?.message || 'Đặt hàng thất bại';

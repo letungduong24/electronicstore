@@ -23,6 +23,25 @@ namespace UserManagementAPI.Mapper
             return dto;
         }
 
+        public UserDto ToDTO(ApplicationUser model, int cartItemCount = 0)
+        {
+            if (model == null)
+                return null;
+
+            var dto = new UserDto
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Email = model.Email,
+                UserName = model.UserName,
+                PhoneNumber = model.PhoneNumber,
+                Address = model.Address,
+                CartItemCount = cartItemCount
+            };
+
+            return dto;
+        }
+
         public UserDto ToDTO(ApplicationUser model, List<string> roles)
         {
             if (model == null)
@@ -37,6 +56,26 @@ namespace UserManagementAPI.Mapper
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
                 Roles = roles
+            };
+
+            return dto;
+        }
+
+        public UserDto ToDTO(ApplicationUser model, List<string> roles, int cartItemCount = 0)
+        {
+            if (model == null)
+                return null;
+
+            var dto = new UserDto
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Email = model.Email,
+                UserName = model.UserName,
+                PhoneNumber = model.PhoneNumber,
+                Address = model.Address,
+                Roles = roles,
+                CartItemCount = cartItemCount
             };
 
             return dto;

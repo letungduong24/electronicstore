@@ -7,6 +7,7 @@ const Navbar = () => {
   const { user, isAuthenticated, logout, isAdmin } = useAuthStore();
   const { getCartItemCount } = useCartStore();
   const navigate = useNavigate();
+  const cartItemCount = user?.cartItemCount || 0;
 
   const handleLogout = async () => {
     await logout();
@@ -48,8 +49,13 @@ const Navbar = () => {
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <>
-                <Link to="/cart" className="relative text-gray-700 hover:text-blue-600 transition-colors">
+                <Link to="/cart" className="relative">
                   <ShoppingCart size={24} />
+                  {cartItemCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1 min-w-[18px] text-center">
+                      {cartItemCount}
+                    </span>
+                  )}
                 </Link>
 
                 {/* User Menu */}

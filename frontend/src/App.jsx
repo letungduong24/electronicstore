@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import useAuthStore from './stores/authStore';
+import useCartStore from './stores/cartStore';
 import Navbar from './components/layout/Navbar';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
@@ -13,14 +14,22 @@ import Profile from './pages/Profile';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminUsers from './pages/admin/Users';
 import AdminProducts from './pages/admin/Products';
-import AdminOrders from './pages/admin/Orders';
 import AdminWallet from './pages/admin/Wallet';
+import AdminOrders from './pages/admin/Orders';
+import AdminOrderDetail from './pages/admin/OrderDetail';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
 import ScrollToTop from './components/ScrollToTop';
+import { useEffect } from 'react';
 
 function App() {
-  const { isAuthenticated } = useAuthStore();
+  const authStore = useAuthStore();
+  const cartStore = useCartStore();
+
+  useEffect(() => {
+    // Gọi getCurrentUser khi đăng nhập, đăng xuất hoặc thay đổi giỏ hàng
+    authStore.getCurrentUser();
+  }, [authStore.isAuthenticated, cartStore.cart]);
 
   return (
     <BrowserRouter>
@@ -33,8 +42,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
-            <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/" />} />
+            <Route path="/login" element={!authStore.isAuthenticated ? <Login /> : <Navigate to="/" />} />
+            <Route path="/register" element={!authStore.isAuthenticated ? <Register /> : <Navigate to="/" />} />
             
             {/* Protected Routes */}
             <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
@@ -45,8 +54,9 @@ function App() {
             <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
             <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
-            <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
             <Route path="/admin/wallet" element={<AdminRoute><AdminWallet /></AdminRoute>} />
+            <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
+            <Route path="/admin/orders/:id" element={<AdminRoute><AdminOrderDetail /></AdminRoute>} />
           </Routes>
         </main>
         <Toaster position="top-right" richColors />

@@ -178,9 +178,6 @@ const Products = () => {
     }
 
     const result = await deleteProduct(id);
-    if (result.success) {
-      toast.success('Xóa sản phẩm thành công');
-    }
   };
 
   const openCreateModal = () => {
@@ -357,7 +354,7 @@ const Products = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${product.price}
+                    {parseFloat(product.price).toLocaleString('vi-VN')} VND
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {product.stock}

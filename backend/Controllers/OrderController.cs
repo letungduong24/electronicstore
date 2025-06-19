@@ -84,5 +84,13 @@ namespace UserManagementAPI.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
+        {
+            var orders = await _orderService.GetAllOrdersAsync();
+            return Ok(orders);
+        }
     }
 } 

@@ -187,5 +187,11 @@ namespace UserManagementAPI.Services
                 throw;
             }
         }
+
+        public async Task<IEnumerable<OrderDto>> GetAllOrdersAsync()
+        {
+            var orders = await _unitOfWork.Orders.GetAllOrdersAsync();
+            return orders.Select(o => _orderMapper.ToOrderDto(o));
+        }
     }
 } 
