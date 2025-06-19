@@ -3,39 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using UserManagementAPI.Models;
 using UserManagementAPI.DTOs;
+using UserManagementAPI.Services.Factories;
 
 namespace UserManagementAPI.Services.Factories
 {
     public class ProductFactory : IProductFactory
     {
-        private readonly Dictionary<string, string[]> _requiredProperties = new()
+        private readonly List<ProductTypeDefinition> _productTypes = new()
         {
-            { "tv", new[] { "ScreenSize" } },
-            { "airconditioner", new[] { "Scope" } },
-            { "washingmachine", new[] { "Capacity" } }
-        };
-
-        private readonly string[] _supportedTypes = { "tv", "airconditioner", "washingmachine" };
-
-        private readonly Dictionary<string, string> _typeDisplayNames = new()
-        {
-            { "tv", "Tivi" },
-            { "airconditioner", "Điều hòa" },
-            { "washingmachine", "Máy giặt" }
+            new ProductTypeDefinition
+            {
+                Type = "tv",
+                DisplayName = "Tivi",
+                RequiredProperties = new[] { "ScreenSize" },
+                CreateInstance = () => new Television()
+            },
+            new ProductTypeDefinition
+            {
+                Type = "airconditioner",
+                DisplayName = "Điều hòa",
+                RequiredProperties = new[] { "Scope" },
+                CreateInstance = () => new AirConditioner()
+            },
+            new ProductTypeDefinition
+            {
+                Type = "washingmachine",
+                DisplayName = "Máy giặt",
+                RequiredProperties = new[] { "Capacity" },
+                CreateInstance = () => new WashingMachine()
+            }
         };
 
         public ProductModel CreateProduct(string type)
         {
-            if (!ValidateProductType(type))
+            var def = _productTypes.FirstOrDefault(x => x.Type.Equals(type, StringComparison.OrdinalIgnoreCase));
+            if (def == null)
                 throw new ArgumentException($"Unsupported product type: {type}");
-
-            return type.ToLower() switch
-            {
-                "tv" => new Television(),
-                "airconditioner" => new AirConditioner(),
-                "washingmachine" => new WashingMachine(),
-                _ => throw new ArgumentException("Unknown product type")
-            };
+            return def.CreateInstance();
         }
 
         public ProductModel CreateProductFromDto(ProductDTO productDto)
@@ -43,11 +47,11 @@ namespace UserManagementAPI.Services.Factories
             if (productDto == null)
                 throw new ArgumentNullException(nameof(productDto));
 
-            if (!ValidateProductType(productDto.Type))
+            var def = _productTypes.FirstOrDefault(x => x.Type.Equals(productDto.Type, StringComparison.OrdinalIgnoreCase));
+            if (def == null)
                 throw new ArgumentException($"Unsupported product type: {productDto.Type}");
 
-            var product = CreateProduct(productDto.Type);
-            
+            var product = def.CreateInstance();
             // Set common properties
             product.ID = productDto.ID;
             product.Name = productDto.Name;
@@ -70,34 +74,33 @@ namespace UserManagementAPI.Services.Factories
 
         public bool ValidateProductType(string type)
         {
-            return !string.IsNullOrEmpty(type) && _supportedTypes.Contains(type.ToLower());
+            return _productTypes.Any(x => x.Type.Equals(type, StringComparison.OrdinalIgnoreCase));
         }
 
         public string[] GetSupportedProductTypes()
         {
-            return _supportedTypes;
+            return _productTypes.Select(x => x.Type).ToArray();
         }
 
         public Dictionary<string, string> GetTypeDisplayNames()
         {
-            return _typeDisplayNames;
+            return _productTypes.ToDictionary(x => x.Type, x => x.DisplayName);
         }
 
         public Dictionary<string, string[]> GetRequiredPropertiesForType(string type)
         {
-            if (!ValidateProductType(type))
+            var def = _productTypes.FirstOrDefault(x => x.Type.Equals(type, StringComparison.OrdinalIgnoreCase));
+            if (def == null)
                 throw new ArgumentException($"Unsupported product type: {type}");
-
-            return new Dictionary<string, string[]> { { type.ToLower(), _requiredProperties[type.ToLower()] } };
+            return new Dictionary<string, string[]> { { def.Type, def.RequiredProperties } };
         }
 
         public bool ValidateProductProperties(string type, Dictionary<string, object> properties)
         {
-            if (!ValidateProductType(type))
+            var def = _productTypes.FirstOrDefault(x => x.Type.Equals(type, StringComparison.OrdinalIgnoreCase));
+            if (def == null)
                 return false;
-
-            var requiredProps = _requiredProperties[type.ToLower()];
-            return requiredProps.All(prop => properties.ContainsKey(prop));
+            return def.RequiredProperties.All(prop => properties != null && properties.ContainsKey(prop));
         }
     }
 } 
