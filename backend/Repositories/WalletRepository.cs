@@ -16,23 +16,6 @@ namespace UserManagementAPI.Repositories
             _userManager = userManager;
         }
 
-        public async Task<ApplicationUser> GetUserByIdAsync(string userId)
-        {
-            return await _userManager.FindByIdAsync(userId);
-        }
-
-        public async Task<bool> UpdateUserAsync(ApplicationUser user)
-        {
-            try
-            {
-                var result = await _userManager.UpdateAsync(user);
-                return result.Succeeded;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         public async Task<decimal> GetUserBalanceAsync(string userId)
         {

@@ -4,8 +4,6 @@ namespace UserManagementAPI.Repositories
 {
     public interface IWalletRepository
     {
-        Task<ApplicationUser> GetUserByIdAsync(string userId);
-        Task<bool> UpdateUserAsync(ApplicationUser user);
         Task<decimal> GetUserBalanceAsync(string userId);
         Task<bool> UpdateUserBalanceAsync(string userId, decimal newBalance);
         Task<bool> DeductFromBalanceAsync(string userId, decimal amount);
